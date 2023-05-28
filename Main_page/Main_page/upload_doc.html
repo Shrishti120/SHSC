@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Document Storage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input[type="file"] {
+      display: block;
+    }
+    .form-group button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .form-group button:hover {
+      background-color: #45a049;
+    }
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .card {
+      flex-basis: 45%;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    .card h2 {
+      margin-top: 0;
+    }
+    .card img {
+      max-width: 200px;
+      max-height: 200px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Document Storage</h1>
+  <div class="container">
+    <div class="form-group">
+      <label for="prescriptionReport">Prescription Report:</label>
+      <input type="file" id="prescriptionReport" multiple>
+    </div>
+    <div class="form-group">
+      <label for="diagnosticReport">Diagnostic Report:</label>
+      <input type="file" id="diagnosticReport" multiple>
+    </div>
+    <div class="form-group">
+      <button onclick="saveDocuments()">Save Documents</button>
+    </div>
+    <div class="card-container" id="documentsContainer">
+      <!-- Dynamic cards will be added here -->
+    </div>
+  </div>
+
+  <script>
+    // Check if documents are stored in local storage
+    var storedPrescriptionReports = JSON.parse(localStorage.getItem('prescriptionReports')) || [];
+    var storedDiagnosticReports = JSON.parse(localStorage.getItem('diagnosticReports')) || [];
+
+    // Display stored documents on page load
+    displayDocuments(storedPrescriptionReports, 'prescriptionReports');
+    displayDocuments(storedDiagnosticReports, 'diagnosticReports');
+
+    function saveDocuments() {
+    var prescriptionReportFiles = Array.from(document.getElementById('prescriptionReport').files);
+    var diagnosticReportFiles = Array.from(document.getElementById('diagnosticReport').files);
+
+    // Check if files are selected
+    if (prescriptionReportFiles.length > 0 || diagnosticReportFiles.length > 0) {
+    // Process prescription reports
+    prescriptionReportFiles.forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+    var dataURL = e.target.result;
+    var resizedImage = resizeImage(dataURL, 200, 200);
+    storedPrescriptionReports.push(resizedImage);
+    saveToLocalStorage('prescriptionReports', storedPrescriptionReports);
+    displayDocuments([resizedImage], 'prescriptionReports');
+    };
+    reader.readAsDataURL(file);
+    });
+
+    // Process diagnostic reports
+    diagnosticReportFiles.forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+    var dataURL = e.target.result;
+    var resizedImage = resizeImage(dataURL, 200, 200);
+    storedDiagnosticReports.push(resizedImage);
+    saveToLocalStorage('diagnosticReports', storedDiagnosticReports);
+    displayDocuments([resizedImage], 'diagnosticReports');
+    };
+    reader.readAsDataURL(file);
+    });
+    } else {
+    // Display error message if no files are selected
+    alert("Please select Prescription Report and/or Diagnostic Report!");
+    }
+    }
+
+    function displayDocuments(documents, containerId) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    documents.forEach(function(document) {
+    var card = createCard(document);
+    container.appendChild(card);
+    });
+    }
+
+    function createCard(document) {
+    var card = document.createElement('div');
+    card.classList.add('card');
+
+    var image = document.createElement('img');
+    image.src = document;
+    image.alt = 'Document Image';
+    image.classList.add('document-image');
+
+    card.appendChild(image);
+
+    return card;
+    }
+
+    function resizeImage(dataURL, maxWidth, maxHeight) {
+    return new Promise(function(resolve, reject) {
+    var image = new Image();
+
+    image.onload = function() {
+    var canvas = document.createElement('canvas');
+    var width = image.width;
+    var height = image.height;
+
+    if (width > maxWidth) {
+    height *= maxWidth / width;
+    width = maxWidth;
+    }
+
+    if (height > maxHeight) {
+    width *= maxHeight / height;
+    height = maxHeight;
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0, width, height);
+
+    resolve(canvas.toDataURL());
+    };
+
+    image.onerror = reject;
+
+    image.src = dataURL;
+    });
+    }
+
+    function saveToLocalStorage(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+    }
+
+  </script>
+</body>
+</html>

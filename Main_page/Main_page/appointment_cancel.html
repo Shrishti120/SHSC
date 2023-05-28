@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Meeting Cancellation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      padding: 20px;
+    }
+
+    .container {
+      border: 1px solid #ccc;
+      background-color: #fff;
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .date {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .time-slot {
+      margin-bottom: 5px;
+    }
+
+    .cancel-button {
+      margin-right: 5px;
+      background-color: #ff6347;
+      border: none;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      
+    }
+
+    .cancel-button:hover {
+      background-color: #e74c3c;
+    }
+
+    .cancel-all {
+      margin-top: 10px;
+      background-color: #3498db;
+      border: none;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .cancel-all:hover {
+      background-color: #2980b9;
+    }
+
+    .message {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="container">
+    <div class="date">May 25, 2023</div>
+    <div class="time-slot">
+      <span>10:00 AM - 11:00 AM</span>
+      <button class="cancel-button">Cancel</button>
+    </div>
+    <div class="time-slot">
+      <span>2:00 PM - 3:00 PM</span>
+      <button class="cancel-button">Cancel</button>
+    </div>
+    <div class="time-slot">
+      <span>4:00 PM - 5:00 PM</span>
+      <button class="cancel-button">Cancel</button>
+    </div>
+    <button class="cancel-all">Cancel All</button>
+  </div>
+
+  <div class="container">
+    <div class="date">May 26, 2023</div>
+    <div class="time-slot">
+      <span>9:00 AM - 10:00 AM</span>
+      <button class="cancel-button">Cancel</button>
+    </div>
+    <div class="time-slot">
+      <span>1:00 PM - 2:00 PM</span>
+      <button class="cancel-button">Cancel</button>
+    </div>
+    <button class="cancel-all">Cancel All</button>
+  </div>
+
+  <script>
+// JavaScript code here
+  var cancelButtons = document.getElementsByClassName('cancel-button');
+  var cancelAllButtons = document.getElementsByClassName('cancel-all');
+
+  // Function to display a pop-up message
+  function showMessage(message) {
+    alert(message);
+  }
+
+  // Function to cancel a specific meeting
+  function cancelMeeting() {
+    var timeSlot = this.parentNode;
+    var timeRange = timeSlot.getElementsByTagName('span')[0].textContent;
+    showMessage('Your meeting has been cancelled for ' + timeRange);
+    timeSlot.parentNode.removeChild(timeSlot);
+  }
+
+  // Function to cancel all meetings for a day
+  function cancelAllMeetings() {
+    var container = this.parentNode;
+    var date = container.getElementsByClassName('date')[0].textContent;
+    showMessage('All meetings for ' + date + ' have been cancelled');
+    container.parentNode.removeChild(container);
+  }
+
+  // Attach event listeners to cancel buttons
+  for (var i = 0; i < cancelButtons.length; i++) {
+    cancelButtons[i].addEventListener('click', cancelMeeting);
+  }
+
+  // Attach event listeners to cancel all buttons
+  for (var j = 0; j < cancelAllButtons.length; j++) {
+    cancelAllButtons[j].addEventListener('click', cancelAllMeetings);
+  }
+  </script>
+</body>
+</html>

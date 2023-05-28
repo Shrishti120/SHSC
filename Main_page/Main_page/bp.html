@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blood Pressure Tracker</title>
+  <style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    }
+
+    h1 {
+    text-align: center;
+    }
+
+    form label {
+    display: block;
+    margin-top: 10px;
+    }
+
+    form input {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+    }
+
+    form button {
+    display: block;
+    margin-top: 10px;
+    }
+
+    table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    }
+
+    table th,
+    table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    }
+
+    table th {
+    background-color: #f2f2f2;
+    }
+
+  </style>
+</head>
+<body>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Blood Pressure Tracker</title>
+    </head>
+    <body>
+      <h1>Blood Pressure Tracker</h1>
+      <div>
+        <form id="bloodPressureForm">
+          <label for="date">Date:</label>
+          <input type="date" id="date" name="date" required>
+          
+          <label for="time">Time:</label>
+          <input type="time" id="time" name="time" required>
+          
+          <label for="systolic">Systolic Pressure:</label>
+          <input type="number" id="systolic" name="systolic" required>
+          
+          <label for="diastolic">Diastolic Pressure:</label>
+          <input type="number" id="diastolic" name="diastolic" required>
+          
+          <button type="submit">Track Blood Pressure</button>
+        </form>
+      </div>
+    
+      <div>
+        <h2>Blood Pressure History</h2>
+        <table id="bloodPressureTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Systolic</th>
+              <th>Diastolic</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+      
+    </body>
+    </html>
+    
+  <script>
+    // Function to save blood pressure to local storage
+    function saveBloodPressure(bloodPressure) {
+    let bloodPressureHistory = JSON.parse(localStorage.getItem('bloodPressureHistory'));
+
+    if (!bloodPressureHistory) {
+    bloodPressureHistory = [];
+    }
+
+    bloodPressureHistory.push(bloodPressure);
+    localStorage.setItem('bloodPressureHistory', JSON.stringify(bloodPressureHistory));
+    }
+
+    // Function to update the blood pressure table
+    function updateBloodPressureTable() {
+    const historyBody = document.getElementById('historyBody');
+    historyBody.innerHTML = '';
+
+    const bloodPressureHistory = JSON.parse(localStorage.getItem('bloodPressureHistory'));
+
+    if (bloodPressureHistory) {
+    bloodPressureHistory.forEach(function(bloodPressure) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+        <td>${bloodPressure.date}</td>
+        <td>${bloodPressure.time}</td>
+        <td>${bloodPressure.systolic}</td>
+        <td>${bloodPressure.diastolic}</td>
+        `;
+        historyBody.appendChild(row);
+    });
+    }
+    }
+
+    // Event listener for form submission
+    document.addEventListener('DOMContentLoaded', function() {
+    const bloodPressureForm = document.getElementById('bloodPressureForm');
+
+    bloodPressureForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Retrieve form values
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const systolic = parseInt(document.getElementById('systolic').value);
+    const diastolic = parseInt(document.getElementById('diastolic').value);
+
+    // Create blood pressure object
+    const bloodPressure = { date, time, systolic, diastolic };
+
+    // Save blood pressure to local storage
+    saveBloodPressure(bloodPressure);
+
+    // Clear form inputs
+    bloodPressureForm.reset();
+
+    // Update table
+    updateBloodPressureTable();
+    });
+
+    // Initialize the table on page load
+    updateBloodPressureTable();
+    });
+
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Document Storage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input[type="file"] {
+      display: block;
+    }
+    .form-group button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .form-group button:hover {
+      background-color: #45a049;
+    }
+    #documentList {
+      margin-top: 20px;
+    }
+    #documentList li {
+      margin-bottom: 10px;
+    }
+    #documentList a {
+      text-decoration: none;
+    }
+    #documentList a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Document Storage</h1>
+  <div class="container">
+    <div class="form-group">
+      <label for="aadharCard">Aadhar Card:</label>
+      <input type="file" id="aadharCard">
+    </div>
+    <div class="form-group">
+      <label for="panCard">PAN Card:</label>
+      <input type="file" id="panCard">
+    </div>
+    <div class="form-group">
+      <button onclick="saveDocuments()">Save Documents</button>
+    </div>
+    <h2>My Documents</h2>
+    <ul id="documentList"></ul>
+  </div>
+
+  <script>
+    var documentList = [];
+
+    function saveDocuments() {
+    var aadharFile = document.getElementById('aadharCard').files[0];
+    var panFile = document.getElementById('panCard').files[0];
+
+    // Check if files are selected
+    if (aadharFile && panFile) {
+    // Simulate server-side storage (replace with actual server-side logic)
+    var aadharUrl = saveFile(aadharFile);
+    var panUrl = saveFile(panFile);
+
+    // Add the documents to the list
+    documentList.push({ name: "Aadhar Card", url: aadharUrl });
+    documentList.push({ name: "PAN Card", url: panUrl });
+
+    // Clear the file inputs
+    document.getElementById('aadharCard').value = "";
+    document.getElementById('panCard').value = "";
+
+    // Update the document list
+    updateDocumentList();
+    } else {
+    // Display error message if any file is missing
+    alert("Please select both Aadhar Card and PAN Card!");
+    }
+    }
+
+    function saveFile(file) {
+    // Simulate server-side storage logic
+    // Replace this with actual server-side code for file upload/storage
+    return URL.createObjectURL(file);
+    }
+
+    function updateDocumentList() {
+    var documentListElement = document.getElementById('documentList');
+    documentListElement.innerHTML = "";
+
+    for (var i = 0; i < documentList.length; i++) {
+    var documentItem = documentList[i];
+    var listItem = document.createElement('li');
+    var link = document.createElement('a');
+    link.href = documentItem.url;
+    link.target = "_blank";
+    link.textContent = documentItem.name;
+    listItem.appendChild(link);
+    documentListElement.appendChild(listItem);
+    }
+    }
+  </script>
+</body>
+</html>
